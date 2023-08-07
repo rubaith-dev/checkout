@@ -1,11 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <script src="https://code.jquery.com/jquery.js" type="text/javascript"></script>
+    <script>
+      // Function to load the paymentWidgets.js with the dynamic checkoutId
+      function loadPaymentWidgets(checkoutId) {
+        var script = document.createElement("script");
+        script.src = `https://eu-test.oppwa.com/v1/paymentWidgets.js?checkoutId=${checkoutId}`;
+        script.type = "text/javascript";
+        document.head.appendChild(script);
+      }
+
+      // Function to handle onReady event
+      function onReadyCallback(data) {
+        $(".wpwl-label-brand").html("Card Brand");
+      }
+
+      // Function to handle onError event
+      function onErrorCallback() {
+        // Handle any errors here
+        console.log("Error occurred during payment processing.");
+      }
+
+      $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get("id");
+        loadPaymentWidgets(id);
+
+        const showPaymentButton = $(".wpwl-button").filter(function () {
+          return $(this).text().trim() === "Show other payment methods";
+        });
+        showPaymentButton.hide();
+      });
+    </script>
+    <title>Checkout</title>
   </head>
+
   <body>
-    <h1>hello</h1>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <form
+      action="http://localhost:3000/subscriptions/user/checkout/redirect"
+      class="paymentWidgets"
+      data-brands="VISA MASTER"
+    ></form>
   </body>
 </html>
+
